@@ -12,16 +12,25 @@ def get_contents(file_name):
         for row in reader:
             number = row[0]
             found = emails.get(number)
-            message = row[len(row)-1].strip()
+            message = row[6].strip()
 
-            if not is_code(message) and message:
-                message = proccess_message(message)
-
+            find_emails = proccess_message(message)
+            find_codes = find_code(message)
 
             if found is None:
-                emails[number] = [message]
+                message = []
+
+                if len(find_emails) > 0:
+                    message.append(find_emails[0])
+                if len(find_codes) > 0:
+                    message.append(find_codes[0])
+                emails[number] = message
+
             elif message not in found:
-                found.append(message)
+                if len(find_emails) > 0:
+                    found.append(find_emails[0])
+                if len(find_codes) > 0:
+                    found.append(find_codes[0])
                 found.sort()
                 emails[number] = found
 
@@ -93,7 +102,11 @@ def is_code(message):
 
 def proccess_message(message):
     email = re.findall("([a-zA-Z0-9\*_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)", message)
-    return email[0]
+    return email
+
+def find_code(message):
+    code = re.findall("([A-Z0-9]{7})", message)
+    return code
 
 
 if __name__ == '__main__':
