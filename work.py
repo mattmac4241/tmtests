@@ -12,7 +12,9 @@ def get_contents(file_name):
         for row in reader:
             number = row[0]
             found = emails.get(number)
-            message = row[6].strip()
+
+            row.sort(key=lambda x: len(x), reverse=True)
+            message = row[0].strip()
 
             find_emails = proccess_message(message)
             find_codes = find_code(message)
@@ -23,7 +25,7 @@ def get_contents(file_name):
                 if len(find_emails) > 0:
                     message.append(find_emails[0])
                 if len(find_codes) > 0:
-                    message.append(find_codes[0])
+                    message.append(find_codes[len(find_codes) -1])
                 emails[number] = message
 
             elif message not in found:
@@ -105,7 +107,8 @@ def proccess_message(message):
     return email
 
 def find_code(message):
-    code = re.findall("([A-Z0-9]{7})", message)
+    code = re.findall(r'\b([A-Z0-9]{7})\b', message)
+    code = list(filter(lambda x: x != 'PRESALE', code))
     return code
 
 
