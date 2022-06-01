@@ -54,6 +54,9 @@ def write_results(file_name, contents, names):
                 if found_name:
                     discovered_emails.append(found_name[0])
 
+            emails = ", ".join(emails)
+            codes = ", ".join(codes)
+            discovered_emails = ", ".join(discovered_emails)
             row = [number, emails, codes, discovered_emails]
             csvwriter.writerow(row)
 
